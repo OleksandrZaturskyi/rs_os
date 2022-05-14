@@ -2,6 +2,7 @@ use core::fmt::{self, Write};
 use lazy_static::lazy_static;
 use spin::Mutex;
 use uart_16550::SerialPort;
+use x86_64::instructions::interrupts as x86_64_interrupts;
 
 #[macro_export]
 macro_rules! serial_println {
@@ -20,10 +21,12 @@ macro_rules! serial_print {
 
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
-    SERIAL1
-        .lock()
-        .write_fmt(args)
-        .expect("Printing to serial failed");
+    x86_64_interrupts::without_interrupts(|| {
+        SERIAL1
+            .lock()
+            .write_fmt(args)
+            .expect("Printing to serial failed");
+    })
 }
 
 lazy_static! {

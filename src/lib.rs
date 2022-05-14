@@ -13,8 +13,8 @@ pub mod vga_buffer;
 use core::any;
 use core::panic::PanicInfo;
 use gdt::init_gdt;
-use interrupts::init_idt;
-use x86_64::instructions::port::Port;
+use interrupts::{init_idt, PICS};
+use x86_64::instructions::{hlt, interrupts as x86_64_interrupts, port::Port};
 
 #[cfg(test)]
 #[no_mangle]
@@ -23,12 +23,20 @@ pub extern "C" fn _start() -> ! {
 
     test_main();
 
-    loop {}
+    hlt_loop()
 }
 
 pub fn init() {
     init_gdt();
     init_idt();
+    unsafe { PICS.lock().initialize() };
+    x86_64_interrupts::enable();
+}
+
+pub fn hlt_loop() -> ! {
+    loop {
+        hlt()
+    }
 }
 
 #[cfg(test)]
@@ -52,8 +60,10 @@ pub trait Testable {
 pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[failed]\n");
     serial_println!("Error: {}\n", info);
+
     exit_qemu(QemuExitCode::Fail);
-    loop {}
+
+    hlt_loop()
 }
 
 impl<T> Testable for T
