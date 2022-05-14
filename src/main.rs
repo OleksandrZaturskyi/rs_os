@@ -4,18 +4,21 @@
 #![test_runner(rs_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-mod serial;
-mod vga_buffer;
-
 use core::panic::PanicInfo;
+use rs_os::{init, println};
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     println!("Hello, world{}", "!");
 
+    init();
+
+    x86_64::instructions::interrupts::int3();
+
     #[cfg(test)]
     test_main();
 
+    println!("It did not crash!");
     loop {}
 }
 

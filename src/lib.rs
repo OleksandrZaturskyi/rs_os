@@ -1,22 +1,31 @@
 #![no_std]
 #![cfg_attr(test, no_main)]
+#![feature(abi_x86_interrupt)]
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+pub mod interrupts;
 pub mod serial;
 pub mod vga_buffer;
 
 use core::any;
 use core::panic::PanicInfo;
+use interrupts::init_idt;
 use x86_64::instructions::port::Port;
 
 #[cfg(test)]
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    init();
+
     test_main();
 
     loop {}
+}
+
+pub fn init() {
+    init_idt();
 }
 
 #[cfg(test)]
@@ -43,7 +52,6 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     exit_qemu(QemuExitCode::Fail);
     loop {}
 }
-
 
 impl<T> Testable for T
 where
