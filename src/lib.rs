@@ -7,6 +7,7 @@
 
 pub mod gdt;
 pub mod interrupts;
+pub mod memory;
 pub mod serial;
 pub mod vga_buffer;
 
@@ -17,8 +18,13 @@ use interrupts::{init_idt, PICS};
 use x86_64::instructions::{hlt, interrupts as x86_64_interrupts, port::Port};
 
 #[cfg(test)]
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+use bootloader::{entry_point, BootInfo};
+
+#[cfg(test)]
+entry_point!(kernel_test_main);
+
+#[cfg(test)]
+fn kernel_test_main(_boot_info: &'static BootInfo) -> ! {
     init();
 
     test_main();

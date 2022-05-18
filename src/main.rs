@@ -4,11 +4,13 @@
 #![test_runner(rs_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use rs_os::{hlt_loop, init, println};
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+entry_point!(kernel_main);
+
+fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hello, world{}", "!");
 
     init();
@@ -24,7 +26,7 @@ pub extern "C" fn _start() -> ! {
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
 
-   hlt_loop()
+    hlt_loop()
 }
 
 #[cfg(test)]
