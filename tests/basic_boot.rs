@@ -18,7 +18,6 @@ fn panic(info: &PanicInfo) -> ! {
     rs_os::test_panic_handler(info)
 }
 
-#[cfg(test)]
 mod test {
     use rs_os::println;
 
