@@ -28,7 +28,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     {
         extern crate alloc;
-
         use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 
         let heap_value = Box::new(41);

@@ -3,6 +3,7 @@
 #![feature(abi_x86_interrupt)]
 #![feature(custom_test_frameworks)]
 #![feature(alloc_error_handler)]
+#![feature(const_mut_refs)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
@@ -12,8 +13,6 @@ pub mod interrupts;
 pub mod memory;
 pub mod serial;
 pub mod vga_buffer;
-
-extern crate alloc;
 
 use core::panic::PanicInfo;
 use core::{alloc::Layout, any};
