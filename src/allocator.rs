@@ -20,8 +20,8 @@ use x86_64::{
 pub const HEAP_START: usize = 0x_4444_4444_0000;
 pub const HEAP_SIZE: usize = 100 * 1024; // 100 KiB
 
-// #[global_allocator]
-// static ALLOCATOR: LockedHeap = LockedHeap::empty();
+#[global_allocator]
+static ALLOCATOR: LockedHeap = LockedHeap::empty();
 
 // #[global_allocator]
 // static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
@@ -29,8 +29,8 @@ pub const HEAP_SIZE: usize = 100 * 1024; // 100 KiB
 // #[global_allocator]
 // static ALLOCATOR: Locked<LinkedListAllocator> = Locked::new(LinkedListAllocator::new());
 
-#[global_allocator]
-static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
+// #[global_allocator]
+// static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
 
 pub fn init_heap(
     mapper: &mut impl Mapper<Size4KiB>,
